@@ -19,7 +19,7 @@ class mqConsumer(mqConsumerInterface):
         
         self.channel.queue_declare(self.queue_name)
         
-        self.exhange = self.channel.exchange_declare(self.exchange_name)
+        self.exchange = self.channel.exchange_declare(self.exchange_name, exchange_type='topic')
         
         self.channel.queue_bind(
             queue= self.queue_name,
@@ -28,7 +28,7 @@ class mqConsumer(mqConsumerInterface):
         )
         
         self.channel.basic_consume(
-            self.queue_name, mqConsumer, auto_ack=False
+            queue=self.queue_name, on_message_callback=self.onMessageCallback, auto_ack=False
         )
     
     def onMessageCallback(self,channel,method_frame, header_frame, body) -> None:
@@ -43,8 +43,8 @@ class mqConsumer(mqConsumerInterface):
         
     def __del__(self):
         print("Closing RMQ connection on destruction")
-        self.channel.close()
         self.connection.close()
+        self.channel.close()
         
         
         

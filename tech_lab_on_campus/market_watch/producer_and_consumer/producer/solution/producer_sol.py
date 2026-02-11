@@ -16,7 +16,7 @@ class mqProducer(mqProducerInterface):
 
         self.channel = self.connection.channel()
 
-        self.channel.exchange_declare(self.exchange_name)
+        self.channel.exchange_declare(self.exchange_name, exchange_type='topic')
 
     def publishOrder(self, message: str) -> None:
         
@@ -27,5 +27,5 @@ class mqProducer(mqProducerInterface):
             body=message,
         )
     
-        # self.channel.close()
-        # self.connection.close()
+        self.channel.close()
+        self.connection.close()
